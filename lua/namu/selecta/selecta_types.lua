@@ -131,6 +131,17 @@
 ---@field items_fully_loaded? boolean Whether all items have been loaded (async)
 ---@field on_close? fun() Function to call when picker closes
 ---@field logical_item_counter? fun(items: SelectaItem[]): number Custom function to count logical items (for multiline/grouped items)
+---@field jump? SelectaJumpConfig Optional jump-label configuration
+
+---@class SelectaJumpConfig
+---@field enabled? boolean Master opt-in. When false (default), jump module is a no-op.
+---@field toggle_key? string Key that toggles jump mode in the prompt buffer. Default ";"
+---@field auto_activate? boolean Enter jump mode immediately when the picker opens. Default false.
+---@field keys? string Ordered string of label characters. One label per visible row.
+---@field hl_group? string Highlight group used for the label virt_text. Default "NamuJumpLabel".
+---@field priority? number Extmark priority for the labels. Default 300.
+---@field min_items? number Skip jump mode if fewer than this many items are visible.
+---@field skip_kinds? table<string, boolean> Map of vim.ui.select kinds for which auto_activate is suppressed.
 
 ---@class CurrentHighlightConfig
 ---@field enabled boolean Whether to use custom highlight

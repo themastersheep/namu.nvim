@@ -495,6 +495,9 @@ function M.setup_prompt_buffer(state, opts)
   })
 
   input_handler.setup_keymaps(state, opts, M.close_picker, M.process_query)
+  if opts.jump and opts.jump.enabled then
+    require("namu.selecta.jump").setup_keymap(state, opts)
+  end
   ui.update_prompt_prefix(state, opts, state:get_query_string())
   vim.cmd("startinsert")
 end
@@ -521,6 +524,7 @@ function M.pick(items, opts)
     row_position = config.row_position,
     debug = config.debug,
     normal_mode = false,
+    jump = config.jump,
   }
   opts = vim.tbl_deep_extend("force", base_opts, opts or {})
 
@@ -569,6 +573,13 @@ function M.pick(items, opts)
   -- Initial processing
   M.process_query(state, opts)
   vim.cmd("redraw")
+
+  -- Optional auto-activation: jump.activate() runs stopinsert which cancels
+  -- the setup_prompt_buffer startinsert in the same synchronous chain, so we
+  -- exit pick() already in normal mode with labels rendered.
+  if opts.jump and opts.jump.enabled and opts.jump.auto_activate then
+    require("namu.selecta.jump").activate(state, opts)
+  end
 
   -- Handle initial cursor position
   if opts.initial_index and opts.initial_index <= #items then

@@ -105,6 +105,76 @@ If only one item remains after filtering, automatically select it.
 auto_select = false,
 ```
 
+## Jump Labels
+Leap-style one-key jumping: place a label character on every visible row,
+press the label to jump to that row and select it in one keystroke.
+
+Off by default; enable globally to bind the toggle key (`;`) on every
+selecta-based picker:
+
+```lua
+require("namu").setup({
+  global = {
+    jump = { enabled = true },
+  },
+})
+```
+
+Press the toggle key (default `;`) in any picker to enter label mode; press
+again or `<Esc>` to exit. Label keystroke selects the labelled row, fires
+`on_select`, and closes the picker. While labels are showing the prompt
+buffer is locked so the filter can't change underfoot. Multiselect (`Tab`)
+is intentionally inert during jump mode — labels are always single-select;
+your prior `Tab` selections are preserved for when you toggle out.
+
+### Auto-activate (per-module)
+
+Some pickers benefit from entering jump mode immediately so single-key
+picks land in one stroke (code actions, buffer picker, spell suggestions):
+
+```lua
+require("namu").setup({
+  global    = { jump = { enabled = true } },
+  ui_select = {
+    enable  = true,
+    options = {
+      jump = {
+        auto_activate = true,
+        -- Suppress auto-activate for specific vim.ui.select kinds.
+        skip_kinds = { confirmation = true },
+      },
+    },
+  },
+})
+```
+
+### Per-call override
+
+`vim.tbl_deep_extend` means callers can override any field on a single call
+without knowing the rest of the config:
+
+```lua
+vim.ui.select(items, {
+  prompt = "Confirm:",
+  jump   = { auto_activate = false }, -- this one picker won't auto-jump
+}, on_choice)
+```
+
+### Full config surface
+
+```lua
+jump = {
+  enabled       = false, -- master opt-in; everything below is dead unless true
+  toggle_key    = ";",   -- key that enters/exits jump mode
+  auto_activate = false, -- enter jump immediately when the picker opens
+  keys          = "asdfghjklqwertyuiopzxcvbnmASDFGHJKLQWERTYUIOPZXCVBNM",
+  hl_group      = "NamuJumpLabel", -- highlight group used for the labels
+  priority      = 300,             -- extmark priority for the labels
+  min_items     = 0,               -- skip jump if fewer visible items than this
+  skip_kinds    = {},              -- table<vim.ui.select kind, true> to skip auto_activate
+},
+```
+
 ## Preserve Order
 Determines whether symbols maintain their original order after filtering.
 
