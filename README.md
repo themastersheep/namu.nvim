@@ -80,7 +80,9 @@ Using [lazy.nvim](https://github.com/folke/lazy.nvim):
 {
     "bassamsdata/namu.nvim",
     opts = {
-        global = { },
+        global = {
+            -- jump = { enabled = true }, -- opt-in: one-key jump labels, toggle with `;`
+        },
         namu_symbols = { -- Specific Module options
             options = {},
         },
@@ -226,6 +228,14 @@ You can check the [configuration documentation](https://github.com/bassamsdata/n
 { -- Those are the default options
   "bassamsdata/namu.nvim",
     opts = {
+    -- global options apply to every picker
+      global = {
+        jump = {
+          enable = false, -- opt-in: one-key jump labels
+          toggle_key = ";", -- press in any picker to toggle label mode
+          auto_activate = false, -- enter jump mode immediately on open
+        }
+      },
       -- Enable symbols navigator which is the default
       namu_symbols = {
         enable = true,
